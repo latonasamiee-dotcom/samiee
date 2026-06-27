@@ -1,0 +1,3377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Samuel Latona — Architect, 3D Generalist & Visualisation Director. 7+ years delivering photorealistic renders, character animation, and permit-ready architecture across four continents."
+    />
+    <title>Samuel Latona · Architect & 3D Generalist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ═══════════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════════ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #f7f5f0;
+        --bg2: #ede9e1;
+        --card: #ffffff;
+        --card2: #f3efe8;
+        --border: rgba(0, 0, 0, 0.09);
+        --gold: #9b6120;
+        --gold2: #b87830;
+        --steel: #1d5c80;
+        --parch: #1a1610;
+        --muted: #5c5648;
+        --muted2: #8a8070;
+        --white: #ffffff;
+        --f-display: "Cormorant Garamond", serif;
+        --f-body: "Outfit", sans-serif;
+        --f-mono: "JetBrains Mono", monospace;
+        --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --nav-h: 68px;
+        --max: 1240px;
+      }
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--parch);
+        font-family: var(--f-body);
+        line-height: 1.65;
+        overflow-x: hidden;
+      }
+      img,
+      video {
+        max-width: 100%;
+        display: block;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-family: inherit;
+        color: inherit;
+      }
+      ::selection {
+        background: rgba(196, 137, 58, 0.3);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   EDIT MODE
+══════════════════════════════════════════════════════════ */
+      body.edit [data-ed] {
+        outline: 1px dashed rgba(196, 137, 58, 0.35);
+        border-radius: 2px;
+        cursor: text;
+        transition: outline 0.15s;
+      }
+      body.edit [data-ed]:hover {
+        outline: 1.5px solid var(--gold);
+      }
+      body.edit [data-ed]:focus {
+        outline: 2px solid var(--gold);
+        background: rgba(196, 137, 58, 0.05);
+      }
+      [contenteditable] {
+        outline: none;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   EDIT TOOLBAR
+══════════════════════════════════════════════════════════ */
+      #editBar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 500;
+        background: rgba(17, 21, 32, 0.97);
+        border-top: 1px solid rgba(196, 137, 58, 0.3);
+        backdrop-filter: blur(20px);
+        padding: 12px 24px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      body.edit #editBar {
+        display: flex;
+      }
+      .eb-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-right: 4px;
+      }
+      .eb-btn {
+        padding: 7px 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border: 1px solid rgba(196, 137, 58, 0.35);
+        color: var(--gold);
+        border-radius: 4px;
+        transition: all 0.15s;
+      }
+      .eb-btn:hover,
+      .eb-btn.on {
+        background: var(--gold);
+        color: #06080f;
+        border-color: var(--gold);
+      }
+      .eb-btn.red {
+        border-color: rgba(220, 80, 80, 0.4);
+        color: #e05555;
+      }
+      .eb-btn.red:hover {
+        background: #e05555;
+        color: #fff;
+        border-color: #e05555;
+      }
+      .eb-sep {
+        width: 1px;
+        height: 24px;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+      .eb-hint {
+        font-size: 0.7rem;
+        color: var(--muted2);
+        margin-left: auto;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════════ */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        height: var(--nav-h);
+        display: flex;
+        align-items: center;
+        padding: 0 48px;
+        gap: 40px;
+        transition:
+          background 0.4s,
+          backdrop-filter 0.4s;
+      }
+      nav.stuck {
+        background: rgba(247, 245, 240, 0.96);
+        backdrop-filter: blur(24px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-logo {
+        font-family: var(--f-display);
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        margin-right: auto;
+      }
+      .nav-logo em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .nav-links {
+        display: flex;
+        gap: 28px;
+      }
+      .nav-links a {
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        transition: color 0.2s;
+        position: relative;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--gold);
+        transform: scaleX(0);
+        transition: transform 0.3s var(--ease);
+      }
+      .nav-links a:hover,
+      nav-links a.act {
+        color: var(--parch);
+      }
+      .nav-links a:hover::after {
+        transform: scaleX(1);
+      }
+      .nav-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      #editToggle {
+        padding: 8px 18px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px solid rgba(196, 137, 58, 0.35);
+        color: var(--gold);
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      #editToggle:hover,
+      #editToggle.on {
+        background: var(--gold);
+        color: #06080f;
+        border-color: var(--gold);
+      }
+      .btn-hire {
+        padding: 8px 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: var(--gold);
+        color: #06080f;
+        border-radius: 4px;
+        transition:
+          opacity 0.2s,
+          transform 0.15s;
+      }
+      .btn-hire:hover {
+        opacity: 0.85;
+        transform: translateY(-1px);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════ */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 120px 80px 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        z-index: 0;
+      }
+      .hero-slide.active {
+        opacity: 1;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(247, 245, 240, 0.8);
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .hero-bg-grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        background-image:
+          linear-gradient(rgba(58, 124, 165, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(58, 124, 165, 0.06) 1px, transparent 1px);
+        background-size: 80px 80px;
+        mask-image: radial-gradient(
+          ellipse 90% 90% at 50% 10%,
+          black 0%,
+          transparent 70%
+        );
+      }
+
+      .hero-radial,
+      .hero-tag,
+      .hero-name,
+      .hero-divider,
+      .hero-sub,
+      .hero-actions,
+      .hero-stats,
+      .hero-ticker-wrap {
+        position: relative;
+        z-index: 3;
+      }
+      .hero-radial {
+        position: absolute;
+        top: -20%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 800px;
+        height: 800px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse,
+          rgba(196, 137, 58, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .hero-tag {
+        font-family: var(--f-mono);
+        font-size: 0.72rem;
+        color: var(--steel);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.2s var(--ease) forwards;
+      }
+      .hero-name {
+        font-family: var(--f-display);
+        font-weight: 600;
+        font-size: clamp(4.5rem, 10vw, 9.5rem);
+        line-height: 0.92;
+        letter-spacing: -0.02em;
+        opacity: 0;
+        animation: fadeUp 0.9s 0.35s var(--ease) forwards;
+      }
+      .hero-name span {
+        display: block;
+      }
+      .hero-name em {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .hero-divider {
+        width: 60px;
+        height: 1px;
+        background: var(--gold);
+        margin: 36px 0;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.6s var(--ease) forwards;
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        font-weight: 300;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 520px;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.75s var(--ease) forwards;
+      }
+      .hero-sub strong {
+        color: var(--parch);
+        font-weight: 500;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 14px;
+        margin-top: 44px;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.9s var(--ease) forwards;
+      }
+
+      .btn-primary {
+        padding: 14px 36px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: var(--gold);
+        color: #06080f;
+        border-radius: 3px;
+        transition: all 0.2s;
+      }
+      .btn-primary:hover {
+        background: var(--gold2);
+        transform: translateY(-2px);
+      }
+      .btn-secondary {
+        padding: 14px 36px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px solid rgba(237, 232, 220, 0.2);
+        color: var(--parch);
+        border-radius: 3px;
+        transition: all 0.2s;
+      }
+      .btn-secondary:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .hero-stats {
+        display: flex;
+        gap: 48px;
+        margin-top: 80px;
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+        opacity: 0;
+        animation: fadeUp 0.7s 1.1s var(--ease) forwards;
+      }
+      .hstat-num {
+        font-family: var(--f-display);
+        font-size: 2.6rem;
+        font-weight: 600;
+        color: var(--gold);
+        line-height: 1;
+      }
+      .hstat-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      /* Ticker */
+      .hero-ticker-wrap {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(247, 245, 240, 0.92);
+        border-top: 1px solid var(--border);
+        overflow: hidden;
+        padding: 12px 0;
+        opacity: 0;
+        animation: fadeUp 0.6s 1.3s var(--ease) forwards;
+      }
+      .hero-ticker {
+        display: flex;
+        gap: 0;
+        width: max-content;
+        animation: ticker 40s linear infinite;
+      }
+      .hero-ticker:hover {
+        animation-play-state: paused;
+      }
+      .ticker-item {
+        padding: 0 32px;
+        font-family: var(--f-mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        border-right: 1px solid var(--border);
+      }
+
+      .ticker-item.hl {
+        color: var(--gold);
+        opacity: 0.7;
+      }
+      @keyframes ticker {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   SECTION SHELL
+══════════════════════════════════════════════════════════ */
+      .section {
+        padding: 110px 80px;
+        max-width: var(--max);
+        margin: 0 auto;
+      }
+      .section-dark {
+        background: var(--bg2);
+      }
+      .section-dark .section {
+        max-width: 100%;
+        padding-left: max(80px, calc(50vw - 620px));
+        padding-right: max(80px, calc(50vw - 620px));
+      }
+      .s-eye {
+        font-family: var(--f-mono);
+        font-size: 0.68rem;
+        color: var(--steel);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: block;
+      }
+      .s-head {
+        font-family: var(--f-display);
+        font-size: clamp(2.2rem, 4vw, 3.4rem);
+        font-weight: 600;
+        line-height: 1.05;
+        letter-spacing: -0.01em;
+        margin-bottom: 56px;
+      }
+      .s-head em {
+        font-style: italic;
+        color: var(--gold);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   ABOUT
+══════════════════════════════════════════════════════════ */
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .about-text p {
+        color: var(--muted);
+        font-size: 0.96rem;
+        line-height: 1.85;
+        margin-bottom: 18px;
+      }
+      .about-text p strong {
+        color: var(--parch);
+        font-weight: 500;
+      }
+      .avail-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(58, 124, 165, 0.1);
+        border: 1px solid rgba(58, 124, 165, 0.25);
+        padding: 8px 16px;
+        border-radius: 100px;
+        margin-top: 28px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        color: var(--steel);
+      }
+      .avail-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 8px #4ade80;
+        animation: pulse2 2s ease-in-out infinite;
+      }
+      @keyframes pulse2 {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .about-sidebar {
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+        margin-bottom: 40px;
+      }
+      .stat-box {
+        background: var(--card);
+        padding: 28px 24px;
+      }
+      .stat-box:first-child {
+        border-radius: 8px 0 0 0;
+      }
+      .stat-box:nth-child(2) {
+        border-radius: 0 8px 0 0;
+      }
+      .stat-box:nth-child(3) {
+        border-radius: 0 0 0 8px;
+      }
+      .stat-box:last-child {
+        border-radius: 0 0 8px 0;
+      }
+      .sn {
+        font-family: var(--f-display);
+        font-size: 2.8rem;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--gold);
+      }
+      .sl {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .countries-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .country-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--card);
+        border-radius: 6px;
+        font-size: 0.88rem;
+      }
+      .country-flag {
+        font-size: 1.1rem;
+      }
+      .country-name {
+        font-weight: 500;
+      }
+      .country-role {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   SOFTWARE ARSENAL
+══════════════════════════════════════════════════════════ */
+      .sw-categories {
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+      }
+      .sw-cat-title {
+        font-family: var(--f-mono);
+        font-size: 0.7rem;
+        color: var(--steel);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .sw-cat-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .sw-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+      }
+      .sw-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        transition: all 0.25s;
+        cursor: default;
+        position: relative;
+        overflow: hidden;
+      }
+      .sw-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(196, 137, 58, 0.06),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .sw-card:hover {
+        border-color: rgba(196, 137, 58, 0.3);
+        transform: translateY(-2px);
+      }
+      .sw-card:hover::before {
+        opacity: 1;
+      }
+      .sw-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .sw-type {
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .sw-dot {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--muted2);
+      }
+      .sw-card.expert .sw-dot {
+        background: var(--gold);
+      }
+      .sw-card.adv .sw-dot {
+        background: var(--steel);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   EXPERIENCE TIMELINE
+══════════════════════════════════════════════════════════ */
+      .timeline {
+        position: relative;
+        padding-left: 40px;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 1px;
+        background: var(--border);
+      }
+      .tl-item {
+        position: relative;
+        margin-bottom: 64px;
+      }
+      .tl-item:last-child {
+        margin-bottom: 0;
+      }
+      .tl-dot {
+        position: absolute;
+        left: -46px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid var(--gold);
+        background: var(--bg);
+      }
+      .tl-item.current .tl-dot {
+        background: var(--gold);
+        box-shadow: 0 0 12px rgba(196, 137, 58, 0.4);
+      }
+      .tl-period {
+        font-family: var(--f-mono);
+        font-size: 0.68rem;
+        color: var(--steel);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .tl-company {
+        font-family: var(--f-display);
+        font-size: 1.55rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .tl-role {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .tl-loc {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tl-achievements {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tl-ach {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .tl-ach::before {
+        content: "—";
+        color: var(--gold);
+        flex-shrink: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+      }
+      .tl-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 14px;
+      }
+      .tl-tag {
+        padding: 3px 10px;
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        background: rgba(58, 124, 165, 0.1);
+        border: 1px solid rgba(58, 124, 165, 0.2);
+        border-radius: 3px;
+        color: var(--steel);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   SERVICES
+══════════════════════════════════════════════════════════ */
+      .svc-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+      }
+      .svc-card {
+        background: var(--card);
+        padding: 44px 36px;
+        position: relative;
+        border-top: 2px solid transparent;
+        transition:
+          border-color 0.3s,
+          background 0.3s;
+        overflow: hidden;
+      }
+      .svc-card::after {
+        content: attr(data-num);
+        position: absolute;
+        right: 24px;
+        bottom: 20px;
+        font-family: var(--f-display);
+        font-size: 4.5rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.03);
+        line-height: 1;
+        pointer-events: none;
+      }
+      .svc-card:hover {
+        border-top-color: var(--gold);
+        background: var(--card2);
+      }
+      .svc-icon {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+      .svc-title {
+        font-family: var(--f-display);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .svc-desc {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 20px;
+      }
+      .svc-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .svc-tool {
+        padding: 3px 9px;
+        font-size: 0.66rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        color: var(--muted2);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   PORTFOLIO
+══════════════════════════════════════════════════════════ */
+      .port-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .port-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .pf-btn {
+        padding: 8px 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        color: var(--muted);
+        transition: all 0.2s;
+      }
+      .pf-btn.on,
+      .pf-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .port-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px;
+      }
+      /* card */
+      .pcard {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        background: var(--card);
+        cursor: pointer;
+        group: true;
+      }
+      .pcard-media {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.7s var(--ease);
+      }
+      .pcard:hover .pcard-media {
+        transform: scale(1.06);
+      }
+      .pcard-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: var(--card2);
+        border: 1px dashed rgba(196, 137, 58, 0.15);
+      }
+      .pcard-placeholder svg {
+        opacity: 0.25;
+      }
+      .pcard-placeholder span {
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted2);
+      }
+      .pcard-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.9) 0%,
+          rgba(0, 0, 0, 0.25) 55%,
+          transparent 100%
+        );
+        opacity: 0;
+        transition: opacity 0.35s;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 28px;
+      }
+      .pcard:hover .pcard-overlay {
+        opacity: 1;
+      }
+      .pcard-cat {
+        font-family: var(--f-mono);
+        font-size: 0.62rem;
+        color: var(--gold);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 7px;
+      }
+      .pcard-title {
+        font-family: var(--f-display);
+        font-size: 1.15rem;
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+      .pcard-desc {
+        font-size: 0.78rem;
+        color: rgba(237, 232, 220, 0.65);
+        line-height: 1.55;
+        margin-bottom: 14px;
+      }
+      .pcard-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .pcard-btn {
+        padding: 6px 14px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border: 1px solid rgba(196, 137, 58, 0.5);
+        color: var(--gold);
+        border-radius: 3px;
+        transition: all 0.2s;
+      }
+      .pcard-btn:hover,
+      .pcard-btn.fill {
+        background: var(--gold);
+        color: #06080f;
+        border-color: var(--gold);
+      }
+      /* edit overlay */
+      .pcard-editbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: rgba(6, 8, 15, 0.93);
+        padding: 8px 12px;
+        display: none;
+        gap: 7px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      body.edit .pcard-editbar {
+        display: flex;
+      }
+      .pce-btn {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border: 1px solid rgba(196, 137, 58, 0.35);
+        color: var(--gold);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .pce-btn:hover {
+        background: var(--gold);
+        color: #06080f;
+        border-color: var(--gold);
+      }
+      .pce-btn.del {
+        border-color: rgba(220, 80, 80, 0.35);
+        color: #e05555;
+      }
+      .pce-btn.del:hover {
+        background: #e05555;
+        color: #fff;
+        border-color: #e05555;
+      }
+      /* add card */
+      .pcard-add {
+        aspect-ratio: 4/3;
+        border: 1px dashed rgba(196, 137, 58, 0.2);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.25s;
+        background: transparent;
+      }
+      body.edit .pcard-add {
+        display: flex;
+      }
+      .pcard-add:hover {
+        border-color: var(--gold);
+        background: rgba(196, 137, 58, 0.04);
+      }
+      .pcard-add span {
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      /* PDF thumb */
+      .pdf-thumb {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--card2);
+      }
+      .pdf-thumb svg {
+        opacity: 0.5;
+      }
+      .pdf-thumb span {
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted2);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════════════════════ */
+      .testi-intro {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 48px;
+        gap: 20px;
+      }
+      .testi-source {
+        font-size: 0.78rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        border-radius: 100px;
+      }
+      .testi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .testi-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 32px;
+        position: relative;
+        transition: border-color 0.25s;
+      }
+      .testi-card:hover {
+        border-color: rgba(196, 137, 58, 0.2);
+      }
+      .testi-quote-mark {
+        font-family: var(--f-display);
+        font-size: 4rem;
+        font-weight: 700;
+        color: rgba(196, 137, 58, 0.15);
+        line-height: 0.7;
+        margin-bottom: 16px;
+      }
+      .testi-text {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.75;
+        font-style: italic;
+        margin-bottom: 24px;
+      }
+      .testi-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .testi-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--card2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--f-display);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--gold);
+        flex-shrink: 0;
+      }
+      .testi-name {
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .testi-meta {
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .testi-stars {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 12px;
+      }
+      .star {
+        color: var(--gold);
+        font-size: 0.9rem;
+      }
+      .testi-placeholder-note {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(196, 137, 58, 0.1);
+        color: var(--gold);
+        padding: 3px 7px;
+        border-radius: 3px;
+        display: none;
+      }
+      body.edit .testi-placeholder-note {
+        display: block;
+      }
+      /* add testimonial btn */
+      .testi-add-btn {
+        display: none;
+        margin-top: 20px;
+        width: 100%;
+        padding: 14px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: 1px dashed rgba(196, 137, 58, 0.25);
+        color: var(--gold);
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+      body.edit .testi-add-btn {
+        display: block;
+      }
+      .testi-add-btn:hover {
+        border-color: var(--gold);
+        background: rgba(196, 137, 58, 0.06);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   CONTACT
+══════════════════════════════════════════════════════════ */
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .contact-links {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 32px;
+      }
+      .clink {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+      .clink:hover {
+        border-color: rgba(196, 137, 58, 0.3);
+        background: var(--card2);
+      }
+      .clink svg {
+        opacity: 0.6;
+        flex-shrink: 0;
+      }
+      .clink:hover svg {
+        opacity: 1;
+      }
+      .clink-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 3px;
+      }
+      .clink-value {
+        font-size: 0.92rem;
+        font-weight: 500;
+      }
+      .clink:hover .clink-value {
+        color: var(--gold);
+      }
+      .contact-form-note {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 36px;
+      }
+      .cfn-title {
+        font-family: var(--f-display);
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .cfn-text {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 24px;
+      }
+      .cfn-services {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .cfn-svc {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .cfn-svc::before {
+        content: "✓";
+        color: var(--gold);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 28px 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--muted2);
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      footer a {
+        color: var(--muted);
+        transition: color 0.2s;
+      }
+      footer a:hover {
+        color: var(--gold);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════════════════ */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 400;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+      }
+      .modal-bg.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        width: 100%;
+        max-width: 560px;
+        padding: 40px;
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-title {
+        font-family: var(--f-display);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .modal-sub {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+      .modal-x {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        font-size: 1.4rem;
+        color: var(--muted);
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .modal-x:hover {
+        color: var(--parch);
+      }
+      .fg {
+        margin-bottom: 18px;
+      }
+      .fl {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .fi,
+      .fsel,
+      .fta {
+        width: 100%;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        color: var(--parch);
+        font-family: var(--f-body);
+        font-size: 0.9rem;
+        padding: 11px 14px;
+        transition: border-color 0.2s;
+      }
+      .fi:focus,
+      .fsel:focus,
+      .fta:focus {
+        outline: none;
+        border-color: var(--gold);
+      }
+      .fta {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .fsel option {
+        background: var(--card);
+      }
+      /* media type tabs */
+      .mtabs {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .mtab {
+        flex: 1;
+        padding: 10px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-align: center;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+        border: none;
+        background: transparent;
+      }
+      .mtab.on {
+        background: var(--gold);
+        color: #06080f;
+      }
+      /* upload zone */
+      .upz {
+        border: 1px dashed rgba(196, 137, 58, 0.3);
+        border-radius: 6px;
+        padding: 32px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .upz:hover {
+        border-color: var(--gold);
+        background: rgba(196, 137, 58, 0.04);
+      }
+      .upz input {
+        display: none;
+      }
+      .upz-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .upz-sub {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .upz-prev {
+        margin-top: 12px;
+        font-size: 0.75rem;
+        color: var(--gold);
+      }
+      .upz-warn {
+        font-size: 0.68rem;
+        color: var(--muted2);
+        margin-top: 6px;
+      }
+      .fsubmit {
+        width: 100%;
+        padding: 13px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: var(--gold);
+        color: #06080f;
+        border-radius: 4px;
+        margin-top: 6px;
+        transition: opacity 0.2s;
+      }
+      .fsubmit:hover {
+        opacity: 0.85;
+      }
+      /* lightbox */
+      .lbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 600;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+      }
+      .lbox.open {
+        display: flex;
+      }
+      .lbox-img {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 4px;
+        object-fit: contain;
+      }
+      .lbox-close {
+        position: fixed;
+        top: 20px;
+        right: 24px;
+        font-size: 2rem;
+        color: var(--muted);
+        cursor: pointer;
+        z-index: 601;
+        transition: color 0.15s;
+      }
+      .lbox-close:hover {
+        color: var(--parch);
+      }
+      .lbox-iframe {
+        width: 90vw;
+        max-width: 900px;
+        height: 70vh;
+        border: none;
+        border-radius: 4px;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   NOTIFICATION
+══════════════════════════════════════════════════════════ */
+      .notif {
+        position: fixed;
+        bottom: 80px;
+        right: 28px;
+        z-index: 600;
+        background: var(--card2);
+        border: 1px solid rgba(196, 137, 58, 0.3);
+        border-radius: 7px;
+        padding: 13px 20px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.3s var(--ease);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+      }
+      .notif.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .nd {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--gold);
+        flex-shrink: 0;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   REVEAL
+══════════════════════════════════════════════════════════ */
+      .rev {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.75s var(--ease),
+          transform 0.75s var(--ease);
+      }
+      .rev.in {
+        opacity: 1;
+        transform: none;
+      }
+      .rev2 {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.75s 0.15s var(--ease),
+          transform 0.75s 0.15s var(--ease);
+      }
+      .rev2.in {
+        opacity: 1;
+        transform: none;
+      }
+      .rev3 {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.75s 0.3s var(--ease),
+          transform 0.75s 0.3s var(--ease);
+      }
+      .rev3.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+      @media (max-width: 1024px) {
+        .hero {
+          padding: 120px 40px 80px;
+        }
+        .section {
+          padding: 80px 40px;
+        }
+        .about-grid {
+          grid-template-columns: 1fr;
+        }
+        .svc-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .port-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .testi-grid {
+          grid-template-columns: 1fr;
+        }
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+        footer {
+          padding: 24px 40px;
+        }
+      }
+      @media (max-width: 700px) {
+        nav {
+          padding: 0 20px;
+        }
+        .nav-links {
+          display: none;
+        }
+        .hero {
+          padding: 100px 24px 70px;
+        }
+        .section {
+          padding: 70px 24px;
+        }
+        .hero-stats {
+          flex-wrap: wrap;
+          gap: 24px;
+        }
+        .port-grid {
+          grid-template-columns: 1fr;
+        }
+        .svc-grid {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        footer {
+          padding: 20px 24px;
+        }
+        .hero-name {
+          font-size: clamp(3.2rem, 12vw, 5.5rem);
+        }
+        .section-dark .section {
+          padding: 70px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══ NAV ═══ -->
+    <nav id="nav">
+      <div class="nav-logo">Samuel <em>Latona</em></div>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#software">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#portfolio">Work</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-right">
+        <button id="editToggle">Edit Site</button>
+        <a href="#contact" class="btn-hire">Hire Me</a>
+      </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero" id="hero">
+      <div
+        class="hero-slide active"
+        style="background-image: url(&quot;new5.png&quot;)"
+      ></div>
+      <div
+        class="hero-slide"
+        style="background-image: url(&quot;Claay.jpg&quot;)"
+      ></div>
+      <div
+        class="hero-slide"
+        style="background-image: url(&quot;Image(5).png&quot;)"
+      ></div>
+      <div class="hero-bg-grid"></div>
+      <div class="hero-radial"></div>
+      <div class="hero-tag">
+        Architect · 3D Generalist · Visualisation Director · Lagos, Nigeria
+      </div>
+      <h1 class="hero-name">
+        <span>Samuel</span>
+        <span><em>Latona</em></span>
+      </h1>
+      <div class="hero-divider"></div>
+      <p class="hero-sub" data-ed data-k="hero.sub" contenteditable="false">
+        Multidisciplinary creative operating at the rare intersection of
+        <strong>full-cycle architectural design</strong> and
+        <strong>high-end 3D digital production</strong>. From schematic concept
+        and permit-ready documentation to cinematic game trailers and
+        photorealistic renders — I deliver work that moves projects forward and
+        wins client confidence.
+      </p>
+      <div class="hero-actions">
+        <a href="#portfolio" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-secondary">Start a Project</a>
+      </div>
+      <div class="hero-stats rev">
+        <div>
+          <div class="hstat-num" data-ed data-k="hs1" contenteditable="false">
+            7+
+          </div>
+          <div class="hstat-label">Years Experience</div>
+        </div>
+        <div>
+          <div class="hstat-num" data-ed data-k="hs2" contenteditable="false">
+            4
+          </div>
+          <div class="hstat-label">Countries Served</div>
+        </div>
+        <div>
+          <div class="hstat-num" data-ed data-k="hs3" contenteditable="false">
+            500k+
+          </div>
+          <div class="hstat-label">Audience Reached</div>
+        </div>
+        <div>
+          <div class="hstat-num" data-ed data-k="hs4" contenteditable="false">
+            100%
+          </div>
+          <div class="hstat-label">Planning Approval Rate</div>
+        </div>
+        <div>
+          <div class="hstat-num" data-ed data-k="hs5" contenteditable="false">
+            30+
+          </div>
+          <div class="hstat-label">Software Tools</div>
+        </div>
+      </div>
+      <div class="hero-ticker-wrap">
+        <div class="hero-ticker" id="ticker"></div>
+      </div>
+    </section>
+
+    <!-- ═══ ABOUT ═══ -->
+    <div id="about">
+      <div class="section">
+        <span class="s-eye">About</span>
+        <div class="about-grid">
+          <div>
+            <h2 class="s-head rev">
+              Where precision<br />meets <em>imagination</em>
+            </h2>
+            <div class="about-text">
+              <p class="rev" data-ed data-k="ab.p1" contenteditable="false">
+                I am a
+                <strong>multidisciplinary design professional</strong> with over
+                7 years of hands-on experience spanning the full spectrum of
+                architectural practice and 3D digital production. My work covers
+                everything from initial brief and schematic concept through to
+                BIM-coordinated technical documentation, planning permit
+                submissions, and construction oversight on one side — and
+                character modelling, rigging, game trailer direction, and
+                cinematic product animation on the other.
+              </p>
+              <p class="rev2" data-ed data-k="ab.p2" contenteditable="false">
+                What makes my work distinctive is the
+                <strong>cross-pollination between disciplines</strong>. My
+                architectural training sharpens every 3D scene I produce:
+                spatial intuition, disciplined lighting, and an obsessive eye
+                for proportion that no amount of software tutorials can
+                replicate. Conversely, my command of real-time engines and
+                cinematic tools elevates every architectural presentation I
+                deliver far beyond what a traditional practice can offer.
+              </p>
+              <p class="rev3" data-ed data-k="ab.p3" contenteditable="false">
+                I have worked remotely with clients across
+                <strong
+                  >Nigeria, the United States, Turkey, and Saudi Arabia</strong
+                >, consistently delivering to broadcast and publication quality
+                under real production pressures. I am a disciplined self-starter
+                and a committed creative who treats every project as an
+                opportunity to raise the standard.
+              </p>
+              <div class="avail-badge rev">
+                <div class="avail-dot"></div>
+                Available for new projects · Remote worldwide
+              </div>
+            </div>
+          </div>
+          <div class="about-sidebar">
+            <div class="stat-grid rev">
+              <div class="stat-box">
+                <div class="sn" data-ed data-k="st1" contenteditable="false">
+                  7+
+                </div>
+                <div class="sl">Years Active</div>
+              </div>
+              <div class="stat-box">
+                <div class="sn" data-ed data-k="st2" contenteditable="false">
+                  6
+                </div>
+                <div class="sl">Companies Worked With</div>
+              </div>
+              <div class="stat-box">
+                <div class="sn" data-ed data-k="st3" contenteditable="false">
+                  12
+                </div>
+                <div class="sl">Countries Reached</div>
+              </div>
+              <div class="stat-box">
+                <div class="sn" data-ed data-k="st4" contenteditable="false">
+                  35%
+                </div>
+                <div class="sl">Cycle Time Reduction</div>
+              </div>
+            </div>
+            <div class="countries-list rev2">
+              <div class="country-item">
+                <span class="country-flag">🇳🇬</span>
+                <div>
+                  <div class="country-name">Nigeria</div>
+                  <div class="country-role">Architecture · BIM · 3D Viz</div>
+                </div>
+              </div>
+              <div class="country-item">
+                <span class="country-flag">🇺🇸</span>
+                <div>
+                  <div class="country-name">United States</div>
+                  <div class="country-role">
+                    Product Animation · Game Trailers
+                  </div>
+                </div>
+              </div>
+              <div class="country-item">
+                <span class="country-flag">🇹🇷</span>
+                <div>
+                  <div class="country-name">Turkey</div>
+                  <div class="country-role">Medical-Tech Product Design</div>
+                </div>
+              </div>
+              <div class="country-item">
+                <span class="country-flag">🇸🇦</span>
+                <div>
+                  <div class="country-name">Saudi Arabia</div>
+                  <div class="country-role">AAA Game Trailer Production</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SOFTWARE ARSENAL ═══ -->
+    <div class="section-dark" id="software">
+      <div class="section">
+        <span class="s-eye">Toolset</span>
+        <h2 class="s-head rev">Software <em>Arsenal</em></h2>
+        <div class="sw-categories" id="swCats"></div>
+      </div>
+    </div>
+
+    <!-- ═══ EXPERIENCE ═══ -->
+    <div id="experience">
+      <div class="section">
+        <span class="s-eye">Career</span>
+        <h2 class="s-head rev">Professional <em>Experience</em></h2>
+        <div class="timeline" id="tlContainer"></div>
+      </div>
+    </div>
+
+    <!-- ═══ SERVICES ═══ -->
+    <div class="section-dark" id="services">
+      <div class="section">
+        <span class="s-eye">What I Offer</span>
+        <h2 class="s-head rev">Services</h2>
+        <div class="svc-grid" id="svcGrid"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PORTFOLIO ═══ -->
+    <div id="portfolio">
+      <div class="section">
+        <div class="port-header">
+          <div>
+            <span class="s-eye">Selected Work</span>
+            <h2 class="s-head rev" style="margin-bottom: 0">Portfolio</h2>
+          </div>
+          <div class="port-filters" id="portFilters">
+            <button class="pf-btn on" data-f="all">All</button>
+            <button class="pf-btn" data-f="architecture">Architecture</button>
+            <button class="pf-btn" data-f="3d">3D & Animation</button>
+            <button class="pf-btn" data-f="visualization">Visualisation</button>
+            <button class="pf-btn" data-f="product">Product Design</button>
+          </div>
+        </div>
+        <div class="port-grid" id="portGrid"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TESTIMONIALS ═══ -->
+    <div class="section-dark" id="testimonials">
+      <div class="section">
+        <div class="testi-intro">
+          <div>
+            <span class="s-eye">Client Feedback</span>
+            <h2 class="s-head rev" style="margin-bottom: 0">
+              What Clients <em>Say</em>
+            </h2>
+          </div>
+          <div class="testi-source rev">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l3 3" />
+            </svg>
+            Reviews from Upwork & direct clients
+          </div>
+        </div>
+        <div class="testi-grid" id="testiGrid"></div>
+        <button class="testi-add-btn" onclick="openTestiModal()">
+          + Add Client Review
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ CONTACT ═══ -->
+    <div id="contact">
+      <div class="section">
+        <span class="s-eye">Get in Touch</span>
+        <h2 class="s-head rev">Let's build something <em>remarkable</em></h2>
+        <div class="contact-grid">
+          <div>
+            <p
+              class="rev"
+              style="
+                color: var(--muted);
+                font-size: 0.95rem;
+                line-height: 1.8;
+                max-width: 440px;
+              "
+              data-ed
+              data-k="ct.p"
+              contenteditable="false"
+            >
+              Whether you need an architectural design delivered to planning
+              authority standard, a cinematic product animation, a
+              BIM-coordinated drawing package, or a game trailer from concept to
+              final composite — I bring the technical depth and creative range
+              to make it happen.
+            </p>
+            <div class="contact-links rev2">
+              <a href="mailto:latonasamiee@gmail.com" class="clink">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                >
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-10 7L2 7" />
+                </svg>
+                <div>
+                  <div class="clink-label">Email</div>
+                  <div class="clink-value">latonasamiee@gmail.com</div>
+                </div>
+              </a>
+              <a
+                href="https://linkedin.com/in/samuellatona"
+                target="_blank"
+                class="clink"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+                <div>
+                  <div class="clink-label">LinkedIn</div>
+                  <div class="clink-value">linkedin.com/in/samuellatona</div>
+                </div>
+              </a>
+              <a
+                href="https://www.upwork.com/freelancers/~01bd532f83dd856a11"
+                target="_blank"
+                class="clink"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                >
+                  <path
+                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                  />
+                </svg>
+                <div>
+                  <div class="clink-label">Upwork</div>
+                  <div class="clink-value">Hire me on Upwork →</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="contact-form-note rev2">
+            <div class="cfn-title">Ready to collaborate?</div>
+            <p
+              class="cfn-text"
+              data-ed
+              data-k="cf.note"
+              contenteditable="false"
+            >
+              Send me an email or message me directly on Upwork to discuss your
+              project. I respond within 24 hours and offer a free initial
+              consultation for new clients.
+            </p>
+            <div class="cfn-services">
+              <div class="cfn-svc">
+                Architectural design & BIM documentation
+              </div>
+              <div class="cfn-svc">3D character modelling & animation</div>
+              <div class="cfn-svc">
+                Photorealistic architectural visualisation
+              </div>
+              <div class="cfn-svc">Game trailer production & direction</div>
+              <div class="cfn-svc">Product design & launch animation</div>
+              <div class="cfn-svc">CAD drafting & permit packages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span data-ed data-k="footer.copy" contenteditable="false"
+        >© 2025 Samuel Latona. All rights reserved.</span
+      >
+      <span>Architect · 3D Generalist · Lagos, Nigeria</span>
+      <div style="display: flex; gap: 20px">
+        <a href="mailto:latonasamiee@gmail.com">Email</a>
+        <a href="https://linkedin.com/in/samuellatona" target="_blank"
+          >LinkedIn</a
+        >
+        <a
+          href="https://www.upwork.com/freelancers/~01bd532f83dd856a11"
+          target="_blank"
+          >Upwork</a
+        >
+      </div>
+    </footer>
+
+    <!-- ═══ EDIT TOOLBAR ═══ -->
+    <div id="editBar">
+      <span class="eb-label">Edit Mode</span>
+      <div class="eb-sep"></div>
+      <button class="eb-btn" onclick="openPortModal()">
+        + Add Portfolio Item
+      </button>
+      <button class="eb-btn" onclick="openTestiModal()">+ Add Review</button>
+      <div class="eb-sep"></div>
+      <button class="eb-btn" onclick="exportData()">Export Backup</button>
+      <button class="eb-btn" onclick="triggerImport()">Import Backup</button>
+      <input
+        type="file"
+        id="importFile"
+        accept=".json"
+        style="display: none"
+        onchange="importData(event)"
+      />
+      <div class="eb-sep"></div>
+      <button class="eb-btn on" onclick="saveAll()">Save All Changes</button>
+      <span class="eb-hint"
+        >Click any text to edit · Use buttons above to add portfolio items</span
+      >
+    </div>
+
+    <!-- ═══ PORTFOLIO MODAL ═══ -->
+    <div class="modal-bg" id="portModal">
+      <div class="modal">
+        <div class="modal-title" id="portModalTitle">Add Portfolio Item</div>
+        <div class="modal-sub">
+          Upload an image, PDF, or video — or paste a URL
+        </div>
+        <span class="modal-x" onclick="closeModal('portModal')">&times;</span>
+        <div class="mtabs">
+          <button class="mtab on" onclick="setMT('image', this)">Image</button>
+          <button class="mtab" onclick="setMT('video', this)">Video</button>
+          <button class="mtab" onclick="setMT('pdf', this)">PDF</button>
+          <button class="mtab" onclick="setMT('url', this)">URL / Link</button>
+        </div>
+        <div id="upzGroup">
+          <div class="fg">
+            <label class="fl">Upload File</label>
+            <div class="upz" onclick="document.getElementById('pFile').click()">
+              <input type="file" id="pFile" onchange="onFileChange(event)" />
+              <div class="upz-title">Click to upload</div>
+              <div class="upz-sub">Images · PDFs · Videos (MP4/WebM)</div>
+              <div class="upz-prev" id="upzPrev"></div>
+            </div>
+            <div class="upz-warn">
+              ⚠ Files over 8MB will be stored as a link — host large videos on
+              YouTube/Vimeo and paste the URL instead.
+            </div>
+          </div>
+        </div>
+        <div id="urlGroup" style="display: none">
+          <div class="fg">
+            <label class="fl">URL</label>
+            <input
+              type="url"
+              class="fi"
+              id="pUrl"
+              placeholder="https://youtube.com/watch?v=... or direct file URL"
+            />
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">Project Title</label
+          ><input
+            type="text"
+            class="fi"
+            id="pTitle"
+            placeholder="e.g. Residential Complex, Abuja"
+          />
+        </div>
+        <div class="fg">
+          <label class="fl">Category</label>
+          <select class="fsel" id="pCat">
+            <option value="architecture">Architecture</option>
+            <option value="3d">3D & Animation</option>
+            <option value="visualization">Visualisation</option>
+            <option value="product">Product Design</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Description</label
+          ><textarea
+            class="fta"
+            id="pDesc"
+            rows="3"
+            placeholder="Brief description of the project..."
+          ></textarea>
+        </div>
+        <div class="fg">
+          <label class="fl">Client / Location (optional)</label
+          ><input
+            type="text"
+            class="fi"
+            id="pClient"
+            placeholder="e.g. Private Client, Lagos · Nigeria"
+          />
+        </div>
+        <div class="fg">
+          <label class="fl"
+            >View Link (optional — Behance, hosted PDF, live URL)</label
+          ><input type="url" class="fi" id="pLink" placeholder="https://..." />
+        </div>
+        <button class="fsubmit" onclick="savePortItem()">
+          Save to Portfolio
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ TESTIMONIAL MODAL ═══ -->
+    <div class="modal-bg" id="testiModal">
+      <div class="modal">
+        <div class="modal-title">Add Client Review</div>
+        <div class="modal-sub">
+          Paste your Upwork review or add a direct client testimonial
+        </div>
+        <span class="modal-x" onclick="closeModal('testiModal')">&times;</span>
+        <div class="fg">
+          <label class="fl">Review Text</label
+          ><textarea
+            class="fta"
+            id="tText"
+            rows="4"
+            placeholder="Paste the client's review here..."
+          ></textarea>
+        </div>
+        <div class="fg">
+          <label class="fl">Client Name</label
+          ><input
+            type="text"
+            class="fi"
+            id="tName"
+            placeholder="e.g. John M."
+          />
+        </div>
+        <div class="fg">
+          <label class="fl">Client Title / Company (optional)</label
+          ><input
+            type="text"
+            class="fi"
+            id="tMeta"
+            placeholder="e.g. CEO, Tech Startup · United States"
+          />
+        </div>
+        <div class="fg">
+          <label class="fl">Rating (1–5)</label>
+          <select class="fsel" id="tRating">
+            <option value="5">★★★★★ 5 stars</option>
+            <option value="4">★★★★☆ 4 stars</option>
+            <option value="3">★★★☆☆ 3 stars</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Source (optional)</label
+          ><input
+            type="text"
+            class="fi"
+            id="tSource"
+            placeholder="e.g. Upwork · Direct Client"
+          />
+        </div>
+        <button class="fsubmit" onclick="saveTestimony()">Add Review</button>
+      </div>
+    </div>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div class="lbox" id="lightbox" onclick="closeLightbox()">
+      <span class="lbox-close">&times;</span>
+      <div id="lboxContent"></div>
+    </div>
+
+    <!-- ═══ NOTIFICATION ═══ -->
+    <div class="notif" id="notif">
+      <div class="nd"></div>
+      <span id="notifTxt"></span>
+    </div>
+
+    <script>
+      // ════════════════════════════════════════════════════
+      //  CONSTANTS & STORAGE KEYS
+      // ════════════════════════════════════════════════════
+      const DB_NAME = "sl_portfolio_db",
+        DB_VER = 2,
+        STORE = "media";
+      const LS_KEY = "sl_portfolio_v4";
+      let currentMT = "image";
+      let currentFileB64 = null;
+      let editPortId = null;
+
+      // ════════════════════════════════════════════════════
+      //  INDEXED DB  (for large file storage)
+      // ════════════════════════════════════════════════════
+      let db;
+      function openDB() {
+        return new Promise((res, rej) => {
+          const req = indexedDB.open(DB_NAME, DB_VER);
+          req.onupgradeneeded = (e) => {
+            e.target.result.createObjectStore(STORE);
+          };
+          req.onsuccess = (e) => {
+            db = e.target.result;
+            res(db);
+          };
+          req.onerror = (e) => rej(e);
+        });
+      }
+      function dbSet(key, val) {
+        return new Promise((res, rej) => {
+          const t = db.transaction(STORE, "readwrite");
+          t.objectStore(STORE).put(val, key);
+          t.oncomplete = () => res();
+          t.onerror = (e) => rej(e);
+        });
+      }
+      function dbGet(key) {
+        return new Promise((res, rej) => {
+          const t = db.transaction(STORE, "readonly");
+          const req = t.objectStore(STORE).get(key);
+          req.onsuccess = () => res(req.result);
+          req.onerror = (e) => rej(e);
+        });
+      }
+      function dbDel(key) {
+        return new Promise((res, rej) => {
+          const t = db.transaction(STORE, "readwrite");
+          t.objectStore(STORE).delete(key);
+          t.oncomplete = () => res();
+          t.onerror = (e) => rej(e);
+        });
+      }
+
+      // ════════════════════════════════════════════════════
+      //  METADATA  (localStorage)
+      // ════════════════════════════════════════════════════
+      const defaults = {
+        text: {},
+        projects: [
+          {
+            id: "p001",
+            type: "image",
+            src: "/works/48unit.png",
+            dbKey: "",
+            title: "48-Unit Residential Development",
+            category: "architecture",
+            desc: "Full BIM documentation from RIBA Stage 1 through Stage 4 Technical Design. Structural grid plans, reflected ceiling plans, stair details, facade systems.",
+            client: "ArcVision Design Consultants · Abuja, Nigeria",
+            link: "",
+          },
+          {
+            id: "p002",
+            type: "image",
+            src: "/works/commercial.png",
+            dbKey: "",
+            title: "Commercial Mixed-Use Complex",
+            category: "architecture",
+            desc: "Permit-ready drawing packages achieving 100% first-submission approval. Site analysis, floor plans, elevations, sections, drainage layouts.",
+            client: "Lagos, Nigeria",
+            link: "",
+          },
+          {
+            id: "p003",
+            type: "video",
+            src: "/works/knight.mp4",
+            dbKey: "",
+            title: "Cinematic Game Trailer — Knight",
+            category: "3d",
+            desc: "Lead 3D artist on a high-production cinematic trailer. Period-accurate knight character with full anatomical rig, cloth simulation, castle set, VFX integration.",
+            client: "Lexis · Texas, USA",
+            link: "",
+          },
+          {
+            id: "p004",
+            type: "video",
+            src: "/works/fantasy.mp4",
+            dbKey: "",
+            title: "AAA Fantasy Game Trailer",
+            category: "3d",
+            desc: "Protagonist character model with full LOD hierarchy, world-building assets, stone architecture, atmospheric lighting, and SFX-choreographed animation.",
+            client: "JH Productions · Riyadh, Saudi Arabia",
+            link: "",
+          },
+          {
+            id: "p005",
+            type: "image",
+            src: "/works/Visualisation.png",
+            dbKey: "",
+            title: "Architectural Visualisation Suite",
+            category: "visualization",
+            desc: "Photorealistic stills and real-time walkthroughs using Unreal Engine 5, Enscape, and V-Ray. Used by clients to secure development funding.",
+            client: "Various Clients · International",
+            link: "",
+          },
+          {
+            id: "p006",
+            type: "video",
+            src: "/works/Orthodontics.mp4",
+            dbKey: "",
+            title: "Orthodontic Product Animation",
+            category: "product",
+            desc: "ISO-compliant 3D models and clinical training animations at extreme precision for a medical-technology client. Deployed across 12 countries.",
+            client: "Forwardontics · Istanbul, Turkey",
+            link: "",
+          },
+          {
+            id: "p007",
+            type: "video",
+            src: "/works/indica.mp4",
+            dbKey: "",
+            title: "Consumer Product Launch Animation",
+            category: "product",
+            desc: "High-fidelity product animations and configurators reaching 500,000+ users across digital marketing campaigns.",
+            client: "Canovation Marketing · Florida, USA",
+            link: "",
+          },
+          {
+            id: "p008",
+            type: "image",
+            src: "/works/Parametric.jpg",
+            dbKey: "",
+            title: "Parametric Facade Study",
+            category: "architecture",
+            desc: "Grasshopper and Rhino 3D parametric design tools for facade geometry exploration, daylight optimisation, and structural efficiency analysis.",
+            client: "Samuel Latona Studio",
+            link: "",
+          },
+        ],
+        testimonials: [
+          {
+            id: "t001",
+            text: "Samuel delivered exceptional architectural drawings and 3D visualisations that were far beyond what we expected. His BIM workflow was flawless and our planning submission was approved on the first attempt. I cannot recommend him highly enough.",
+            name: "David A.",
+            meta: "Real Estate Developer · United States",
+            rating: 5,
+            source: "Upwork",
+            placeholder: true,
+          },
+          {
+            id: "t002",
+            text: "Incredible 3D artist. The game trailer assets Samuel produced were broadcast quality — the character rig, cloth simulation, and VFX integration were all done to an extremely high standard. We will absolutely hire him again.",
+            name: "Michael R.",
+            meta: "Game Studio Director · Texas, USA",
+            rating: 5,
+            source: "Upwork",
+            placeholder: true,
+          },
+          {
+            id: "t003",
+            text: "Samuel created product animations for our orthodontic devices that were used in clinical training programmes across 12 countries. His attention to anatomical accuracy and ISO compliance requirements was outstanding.",
+            name: "Elif K.",
+            meta: "Product Lead · Forwardontics, Istanbul",
+            rating: 5,
+            source: "Direct Client",
+            placeholder: true,
+          },
+        ],
+      };
+      function getMeta() {
+        try {
+          return (
+            JSON.parse(localStorage.getItem(LS_KEY)) ||
+            JSON.parse(JSON.stringify(defaults))
+          );
+        } catch {
+          return JSON.parse(JSON.stringify(defaults));
+        }
+      }
+      function setMeta(d) {
+        localStorage.setItem(LS_KEY, JSON.stringify(d));
+      }
+
+      function initSlideshow() {
+        const slides = document.querySelectorAll(".hero-slide");
+        if (!slides.length) return;
+        let current = 0;
+        setInterval(() => {
+          slides[current].classList.remove("active");
+          current = (current + 1) % slides.length;
+          slides[current].classList.add("active");
+        }, 4000);
+      }
+      initSlideshow();
+
+      // ════════════════════════════════════════════════════
+      //  TICKER
+      // ════════════════════════════════════════════════════
+      const allSoftware = [
+        "AutoCAD",
+        "Autodesk Revit",
+        "ArchiCAD",
+        "Rhino 3D",
+        "Grasshopper",
+        "SketchUp Pro",
+        "Vectorworks",
+        "FreeCAD",
+        "Blender",
+        "Autodesk Maya",
+        "ZBrush",
+        "Cinema 4D",
+        "3ds Max",
+        "Houdini FX",
+        "Substance Painter",
+        "Substance Designer",
+        "Marvelous Designer",
+        "Unreal Engine 5",
+        "Unity",
+        "V-Ray",
+        "Corona",
+        "Arnold",
+        "Octane",
+        "Lumion",
+        "Enscape",
+        "Twinmotion",
+        "After Effects",
+        "DaVinci Resolve",
+        "Adobe Photoshop",
+        "Adobe InDesign",
+        "Adobe Illustrator",
+        "SolidWorks",
+      ];
+      function buildTicker() {
+        const t = document.getElementById("ticker");
+        const items = [...allSoftware, ...allSoftware];
+        t.innerHTML = items
+          .map(
+            (s, i) =>
+              `<span class="ticker-item${i % 5 === 0 ? " hl" : ""}">${s}</span>`,
+          )
+          .join("");
+      }
+
+      // ════════════════════════════════════════════════════
+      //  SOFTWARE GRID
+      // ════════════════════════════════════════════════════
+      const swCats = [
+        {
+          label: "Architecture & BIM",
+          items: [
+            { name: "AutoCAD", type: "2D/3D Drafting", level: "expert" },
+            { name: "Autodesk Revit", type: "BIM Platform", level: "expert" },
+            { name: "ArchiCAD", type: "BIM Documentation", level: "adv" },
+            { name: "Rhino 3D", type: "Surface Modelling", level: "expert" },
+            { name: "Grasshopper", type: "Parametric Design", level: "adv" },
+            {
+              name: "SketchUp Pro",
+              type: "Concept Modelling",
+              level: "expert",
+            },
+            { name: "Vectorworks", type: "Architectural CAD", level: "adv" },
+            { name: "FreeCAD", type: "Parametric CAD", level: "adv" },
+          ],
+        },
+        {
+          label: "3D Modelling & Animation",
+          items: [
+            { name: "Blender", type: "3D Generalist", level: "expert" },
+            { name: "Autodesk Maya", type: "Character & Rig", level: "expert" },
+            { name: "ZBrush", type: "High-Poly Sculpting", level: "expert" },
+            { name: "Cinema 4D", type: "Motion Graphics", level: "adv" },
+            { name: "3ds Max", type: "Viz & Modelling", level: "expert" },
+            { name: "Houdini FX", type: "Procedural VFX", level: "adv" },
+            {
+              name: "Marvelous Designer",
+              type: "Cloth Simulation",
+              level: "adv",
+            },
+            { name: "SolidWorks", type: "Mechanical CAD", level: "adv" },
+          ],
+        },
+        {
+          label: "Texturing, Shading & Materials",
+          items: [
+            {
+              name: "Substance Painter",
+              type: "PBR Texturing",
+              level: "expert",
+            },
+            {
+              name: "Substance Designer",
+              type: "Material Authoring",
+              level: "adv",
+            },
+            {
+              name: "Adobe Photoshop",
+              type: "Post & Compositing",
+              level: "expert",
+            },
+            {
+              name: "Adobe Illustrator",
+              type: "Vector & Diagrams",
+              level: "adv",
+            },
+          ],
+        },
+        {
+          label: "Rendering Engines",
+          items: [
+            { name: "V-Ray", type: "Offline Rendering", level: "expert" },
+            { name: "Corona Renderer", type: "Arch Viz", level: "expert" },
+            {
+              name: "Unreal Engine 5",
+              type: "Real-Time Rendering",
+              level: "expert",
+            },
+            { name: "Enscape", type: "BIM-Linked Render", level: "expert" },
+            { name: "Lumion", type: "Arch Animation", level: "expert" },
+            { name: "Twinmotion", type: "Real-Time VR", level: "adv" },
+            { name: "Arnold", type: "Film-Quality Render", level: "adv" },
+            { name: "Octane", type: "GPU Rendering", level: "adv" },
+            { name: "Unity", type: "Real-Time Engine", level: "adv" },
+          ],
+        },
+        {
+          label: "Post-Production & Presentation",
+          items: [
+            {
+              name: "Adobe After Effects",
+              type: "VFX Compositing",
+              level: "expert",
+            },
+            { name: "DaVinci Resolve", type: "Colour Grading", level: "adv" },
+            { name: "Adobe InDesign", type: "Layout & Print", level: "adv" },
+            {
+              name: "Microsoft Office",
+              type: "Documentation",
+              level: "expert",
+            },
+          ],
+        },
+      ];
+      function renderSoftware() {
+        const container = document.getElementById("swCats");
+        container.innerHTML = swCats
+          .map(
+            (cat) => `
+    <div class="rev">
+      <div class="sw-cat-title">${cat.label}</div>
+      <div class="sw-grid">
+        ${cat.items
+          .map(
+            (s) => `
+          <div class="sw-card ${s.level}">
+            <div class="sw-dot" title="${s.level === "expert" ? "Expert" : "Advanced"}"></div>
+            <div class="sw-name">${s.name}</div>
+            <div class="sw-type">${s.type}</div>
+          </div>`,
+          )
+          .join("")}
+      </div>
+    </div>`,
+          )
+          .join("");
+        initReveal();
+      }
+
+      // ════════════════════════════════════════════════════
+      //  EXPERIENCE TIMELINE
+      // ════════════════════════════════════════════════════
+      const jobs = [
+        {
+          period: "January 2019 – Present",
+          current: true,
+          company: "Samuel Latona Architecture & Design Studio",
+          role: "Principal Architect & 3D Visualisation Director",
+          loc: "Lagos, Nigeria · Remote International",
+          tags: [
+            "AutoCAD",
+            "Revit",
+            "Rhino 3D",
+            "Grasshopper",
+            "Blender",
+            "UE5",
+            "Enscape",
+            "V-Ray",
+          ],
+          achievements: [
+            "Lead end-to-end architectural commissions across residential, commercial, hospitality, and mixed-use typologies in Nigeria, the US, Turkey, and Saudi Arabia.",
+            "Implemented a BIM-first studio workflow in Autodesk Revit, reducing design-to-documentation cycle times by 35% and eliminating multi-discipline coordination errors.",
+            "Produced full permit-ready drawing packages including site analysis, floor plans, elevations, cross-sections, drainage layouts, and large-scale construction details.",
+            "Achieved a 100% first-submission planning approval rate across all planning permission and building regulation applications.",
+            "Delivered photorealistic 3D visualisations and real-time walkthroughs using Unreal Engine 5, Enscape, and Lumion — consistently used by clients to secure development funding.",
+            "Built parametric design tools in Grasshopper and Rhino 3D for facade geometry exploration, daylight optimisation, and structural efficiency analysis.",
+          ],
+        },
+        {
+          period: "October 2022 – Present",
+          current: true,
+          company: "Canovation Marketing",
+          role: "Senior Product Designer & 3D Animator",
+          loc: "Florida, United States · Remote",
+          tags: [
+            "Blender",
+            "Cinema 4D",
+            "Substance Painter",
+            "After Effects",
+            "3ds Max",
+          ],
+          achievements: [
+            "Delivered high-fidelity 3D product design and animation for consumer and industrial clients — product launch visuals, explainer animations, and interactive product configurators.",
+            "Productions reached audiences of 500,000+ users across digital marketing campaigns.",
+            "Launched an iterative client review process that reduced feedback loops by 40% and improved client satisfaction scores.",
+            "Delivered cost-optimised designs 20–30% below initial budget projections without compromising visual quality.",
+            "Collaborated with brand strategists, UX designers, and engineers from concept through to production-ready specifications.",
+          ],
+        },
+        {
+          period: "October 2022 – Present",
+          current: true,
+          company: "Forwardontics",
+          role: "3D Product Design & Animation Specialist",
+          loc: "Istanbul, Turkey · Remote",
+          tags: ["Blender", "SolidWorks", "Substance Painter", "After Effects"],
+          achievements: [
+            "Designed and produced detailed 3D models and full-cycle product animations for a medical-technology client in the orthodontics sector, requiring extreme precision and anatomical accuracy.",
+            "Collaborated with engineering and clinical teams to verify design changes against functional and ISO-compliant regulatory requirements.",
+            "Identified and developed three new product features based on direct user research — all three were adopted into the commercial product roadmap.",
+            "Delivered full product animation and explanatory video content used in clinical training programmes and investor presentations across 12 countries.",
+            "Reduced engineering change order cycle time by 25% through standardised documentation templates and improved annotation protocols.",
+          ],
+        },
+        {
+          period: "January 2023 – April 2023",
+          current: false,
+          company: "Lexis",
+          role: "Lead 3D Artist — Game Trailer Production",
+          loc: "Texas, United States · Remote",
+          tags: [
+            "Maya",
+            "ZBrush",
+            "Substance Painter",
+            "Blender",
+            "After Effects",
+            "Houdini",
+          ],
+          achievements: [
+            "Served as lead 3D artist on a high-production-value cinematic game trailer — full creative and technical oversight from concept brief to final composited deliverable.",
+            "Developed a period-accurate Knight character model with fully rigged anatomy, cloth simulation, and custom shader networks built in ZBrush, Maya, and Substance Painter.",
+            "Constructed large-scale environmental sets including a historically referenced castle complex, atmospheric landscape terrain, and dynamic cinematic lighting rigs.",
+            "Integrated VFX systems (particle simulations, volumetric fog, fire, and destruction effects) and SFX sync points, delivering a 90-second trailer on campaign deadline.",
+          ],
+        },
+        {
+          period: "March 2020 – December 2022",
+          current: false,
+          company: "ArcVision Design Consultants",
+          role: "Project Architect — Urban Residential & Commercial",
+          loc: "Abuja, Nigeria",
+          tags: ["AutoCAD", "Revit", "ArchiCAD", "SketchUp", "Lumion"],
+          achievements: [
+            "Designed and delivered a 48-unit mixed-income residential development in Abuja — full BIM documentation from RIBA Stage 1 through Stage 4 Technical Design, including all statutory submissions.",
+            "Produced detailed construction drawing sets: structural grid plans, reflected ceiling plans, stair and ramp details, facade system drawings, and fire strategy plans coordinated across all engineering disciplines.",
+            "Performed regulatory compliance reviews against the National Building Code of Nigeria and local planning authority guidelines.",
+            "Coordinated with quantity surveyors on material specifications and value engineering, achieving a 15% reduction in superstructure costs while maintaining design integrity.",
+            "Supervised construction site visits, reviewed contractor submissions, responded to RFIs, and issued architectural instructions to maintain design quality on site.",
+          ],
+        },
+        {
+          period: "June 2021 – November 2021",
+          current: false,
+          company: "JH Productions",
+          role: "3D Generalist — Game Trailer Production",
+          loc: "Riyadh, Saudi Arabia · Remote",
+          tags: [
+            "Maya",
+            "ZBrush",
+            "Blender",
+            "Unreal Engine 5",
+            "Substance Painter",
+          ],
+          achievements: [
+            "Contributed to a full AAA-style fantasy game trailer across character design, environment creation, and cinematic animation within a six-month production schedule.",
+            "Produced a fully rigged and textured protagonist character model to broadcast quality, with a complete LOD hierarchy for both cinematic rendering and real-time game engine deployment.",
+            "Created expansive world-building assets — stone architecture, natural environments, and atmospheric lighting referencing historical and cultural design precedents for authenticity.",
+            "Collaborated with the audio team to choreograph animation to SFX and musical score, delivering a coherent and emotionally impactful final trailer.",
+          ],
+        },
+      ];
+      function renderTimeline() {
+        document.getElementById("tlContainer").innerHTML = jobs
+          .map(
+            (j) => `
+    <div class="tl-item${j.current ? " current" : ""} rev">
+      <div class="tl-dot"></div>
+      <div class="tl-period">${j.period}</div>
+      <div class="tl-company">${j.company}</div>
+      <div class="tl-role">${j.role}</div>
+      <div class="tl-loc">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${j.loc}
+      </div>
+      <div class="tl-achievements">
+        ${j.achievements.map((a) => `<div class="tl-ach">${a}</div>`).join("")}
+      </div>
+      <div class="tl-tags">${j.tags.map((t) => `<span class="tl-tag">${t}</span>`).join("")}</div>
+    </div>`,
+          )
+          .join("");
+        initReveal();
+      }
+
+      // ════════════════════════════════════════════════════
+      //  SERVICES
+      // ════════════════════════════════════════════════════
+      const services = [
+        {
+          icon: "🏛",
+          num: "01",
+          title: "Architectural Design",
+          desc: "Full-cycle design delivery from brief and schematic concept through technical documentation, planning submissions, and construction oversight across residential, commercial, and hospitality typologies.",
+          tools: ["AutoCAD", "Revit", "ArchiCAD", "SketchUp Pro", "Rhino 3D"],
+        },
+        {
+          icon: "🎬",
+          num: "02",
+          title: "3D Animation & VFX",
+          desc: "Character modelling, rigging, cinematic animation, game trailer production, and VFX integration at broadcast quality. End-to-end pipeline management from concept to composited output.",
+          tools: ["Blender", "Maya", "ZBrush", "Houdini", "After Effects"],
+        },
+        {
+          icon: "✨",
+          num: "03",
+          title: "Architectural Visualisation",
+          desc: "Photorealistic stills, real-time walkthroughs, and interactive presentations using industry-leading render engines. Consistently used by clients to accelerate approvals and secure funding.",
+          tools: ["UE5", "Enscape", "Lumion", "V-Ray", "Corona"],
+        },
+        {
+          icon: "📦",
+          num: "04",
+          title: "Product Design & Animation",
+          desc: "High-fidelity 3D modelling and animation for product launches, technical documentation, and clinical training — from consumer goods to ISO-compliant medical devices.",
+          tools: ["Blender", "3ds Max", "SolidWorks", "Substance Painter"],
+        },
+        {
+          icon: "🗂",
+          num: "05",
+          title: "BIM Coordination",
+          desc: "Multi-discipline BIM coordination across architectural, structural, and MEP disciplines. IFC export, clash detection, and full drawing package production to local regulatory standards.",
+          tools: ["Autodesk Revit", "ArchiCAD", "AutoCAD", "Grasshopper"],
+        },
+        {
+          icon: "🌐",
+          num: "06",
+          title: "CAD & Technical Drawing",
+          desc: "Permit-ready drawing packages, construction details, and regulatory submissions with a 100% first-submission approval rate. National Building Code, RIBA Stage 1–4 delivery.",
+          tools: ["AutoCAD", "Revit", "Vectorworks", "FreeCAD"],
+        },
+      ];
+      function renderServices() {
+        document.getElementById("svcGrid").innerHTML = services
+          .map(
+            (s) => `
+    <div class="svc-card rev" data-num="${s.num}">
+      <div class="svc-icon">${s.icon}</div>
+      <div class="svc-title">${s.title}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-tools">${s.tools.map((t) => `<span class="svc-tool">${t}</span>`).join("")}</div>
+    </div>`,
+          )
+          .join("");
+        initReveal();
+      }
+
+      // ════════════════════════════════════════════════════
+      //  PORTFOLIO
+      // ════════════════════════════════════════════════════
+      async function renderPortfolio(filter = "all") {
+        const data = getMeta();
+        const projs =
+          filter === "all"
+            ? data.projects
+            : data.projects.filter((p) => p.category === filter);
+        const grid = document.getElementById("portGrid");
+        // Resolve media sources from IndexedDB
+        const cards = await Promise.all(
+          projs.map(async (p) => {
+            let mediaSrc = p.src || "";
+            if (!mediaSrc && p.dbKey) {
+              try {
+                const blob = await dbGet(p.dbKey);
+                if (blob) mediaSrc = URL.createObjectURL(blob);
+              } catch (e) {}
+            }
+            return { proj: p, src: mediaSrc };
+          }),
+        );
+        grid.innerHTML =
+          cards
+            .map(
+              ({ proj: p, src }) => `
+    <div class="pcard rev" data-id="${p.id}" data-cat="${p.category}">
+      <div class="pcard-editbar">
+        <span style="font-size:.6rem;color:var(--muted2)">Edit:</span>
+        <button class="pce-btn" onclick="openEditPort('${p.id}')">Replace Media</button>
+        <button class="pce-btn" onclick="editPortText('${p.id}')">Edit Info</button>
+        <button class="pce-btn del" onclick="deletePort('${p.id}')">Remove</button>
+      </div>
+      ${src ? renderMedia(p, src) : renderPlaceholder(p)}
+      <div class="pcard-overlay">
+        <div class="pcard-cat">${p.category}</div>
+        <div class="pcard-title">${p.title}</div>
+        <div class="pcard-desc">${p.client ? p.client + " — " : ""}${p.desc}</div>
+        <div class="pcard-actions">
+          ${src ? `<button class="pcard-btn fill" onclick="openLightbox('${p.id}','${encodeURIComponent(src)}','${p.type}',event)">View</button>` : ""}
+          ${p.link ? `<a href="${p.link}" target="_blank" class="pcard-btn">Open Link</a>` : ""}
+        </div>
+      </div>
+    </div>`,
+            )
+            .join("") +
+          `<button class="pcard-add" onclick="openPortModal()">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span>Add Project</span>
+  </button>`;
+        // video hover
+        grid.querySelectorAll(".pcard").forEach((c) => {
+          const v = c.querySelector("video");
+          if (v) {
+            c.addEventListener("mouseenter", () => v.play());
+            c.addEventListener("mouseleave", () => {
+              v.pause();
+              v.currentTime = 0;
+            });
+          }
+        });
+        initReveal();
+      }
+      function renderMedia(p, src) {
+        if (p.type === "video")
+          return `<video class="pcard-media" src="${src}" muted loop playsinline preload="metadata"></video>`;
+        if (p.type === "pdf")
+          return `<div class="pdf-thumb"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#C4893A" stroke-width="1.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>PDF Document</span></div>`;
+        return `<img class="pcard-media" src="${src}" alt="${p.title}" loading="lazy"/>`;
+      }
+      function renderPlaceholder() {
+        return `<div class="pcard-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Add your work here</span></div>`;
+      }
+
+      // ════════════════════════════════════════════════════
+      //  PORTFOLIO FILTER
+      // ════════════════════════════════════════════════════
+      document.getElementById("portFilters").addEventListener("click", (e) => {
+        const btn = e.target.closest(".pf-btn");
+        if (!btn) return;
+        document
+          .querySelectorAll(".pf-btn")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        renderPortfolio(btn.dataset.f);
+      });
+
+      // ════════════════════════════════════════════════════
+      //  PORTFOLIO MODAL
+      // ════════════════════════════════════════════════════
+      function openPortModal() {
+        editPortId = null;
+        document.getElementById("portModalTitle").textContent =
+          "Add Portfolio Item";
+        ["pTitle", "pDesc", "pClient", "pLink"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("pUrl").value = "";
+        document.getElementById("upzPrev").textContent = "";
+        currentFileB64 = null;
+        currentMT = "image";
+        document
+          .querySelectorAll(".mtab")
+          .forEach((t, i) => t.classList.toggle("on", i === 0));
+        document.getElementById("upzGroup").style.display = "block";
+        document.getElementById("urlGroup").style.display = "none";
+        document.getElementById("pFile").accept = "image/*";
+        openModal("portModal");
+      }
+      function openEditPort(id) {
+        const data = getMeta();
+        const p = data.projects.find((x) => x.id === id);
+        if (!p) return;
+        editPortId = id;
+        document.getElementById("portModalTitle").textContent =
+          "Edit Portfolio Item";
+        document.getElementById("pTitle").value = p.title || "";
+        document.getElementById("pDesc").value = p.desc || "";
+        document.getElementById("pClient").value = p.client || "";
+        document.getElementById("pLink").value = p.link || "";
+        document.getElementById("pCat").value = p.category || "architecture";
+        document.getElementById("upzPrev").textContent =
+          p.src || p.dbKey ? "Current media loaded" : "";
+        currentFileB64 = null;
+        setMT(p.type || "image", document.querySelector(".mtab"));
+        openModal("portModal");
+      }
+      function editPortText(id) {
+        const data = getMeta();
+        const p = data.projects.find((x) => x.id === id);
+        if (!p) return;
+        const t = prompt("Title:", p.title);
+        if (t !== null) p.title = t;
+        const d = prompt("Description:", p.desc);
+        if (d !== null) p.desc = d;
+        const c = prompt("Client / Location:", p.client || "");
+        if (c !== null) p.client = c;
+        const l = prompt("View Link:", p.link || "");
+        if (l !== null) p.link = l;
+        setMeta(data);
+        renderPortfolio(document.querySelector(".pf-btn.on").dataset.f);
+        notify("Updated ✓");
+      }
+      async function deletePort(id) {
+        if (!confirm("Remove this project from your portfolio?")) return;
+        const data = getMeta();
+        const p = data.projects.find((x) => x.id === id);
+        if (p && p.dbKey) {
+          try {
+            await dbDel(p.dbKey);
+          } catch (e) {}
+        }
+        data.projects = data.projects.filter((x) => x.id !== id);
+        setMeta(data);
+        renderPortfolio(document.querySelector(".pf-btn.on").dataset.f);
+        notify("Removed");
+      }
+      async function savePortItem() {
+        const title = document.getElementById("pTitle").value.trim();
+        if (!title) {
+          notify("Please add a title");
+          return;
+        }
+        const data = getMeta();
+        let src = "",
+          dbKey = "";
+        if (currentMT === "url") {
+          src = document.getElementById("pUrl").value.trim();
+        } else if (currentFileB64) {
+          if (currentFileB64.length > 8 * 1024 * 1024) {
+            // Store in IndexedDB as blob
+            const resp = await fetch(currentFileB64);
+            const blob = await resp.blob();
+            dbKey = "media_" + (editPortId || "p" + Date.now());
+            await dbSet(dbKey, blob);
+            src = "";
+          } else {
+            src = currentFileB64;
+          }
+        } else {
+          // keep existing
+          const existing = editPortId
+            ? data.projects.find((x) => x.id === editPortId)
+            : null;
+          src = existing?.src || "";
+          dbKey = existing?.dbKey || "";
+        }
+        const proj = {
+          id: editPortId || "p" + Date.now(),
+          type: currentMT,
+          src,
+          dbKey,
+          title,
+          category: document.getElementById("pCat").value,
+          desc: document.getElementById("pDesc").value.trim(),
+          client: document.getElementById("pClient").value.trim(),
+          link: document.getElementById("pLink").value.trim(),
+        };
+        if (editPortId) {
+          const idx = data.projects.findIndex((x) => x.id === editPortId);
+          if (idx > -1) data.projects[idx] = proj;
+        } else {
+          data.projects.push(proj);
+        }
+        setMeta(data);
+        closeModal("portModal");
+        renderPortfolio(document.querySelector(".pf-btn.on").dataset.f);
+        notify(editPortId ? "Portfolio item updated ✓" : "Project added ✓");
+        editPortId = null;
+        currentFileB64 = null;
+      }
+      function setMT(type, btn) {
+        currentMT = type;
+        document
+          .querySelectorAll(".mtab")
+          .forEach((t) => t.classList.remove("on"));
+        if (btn) btn.classList.add("on");
+        document.getElementById("upzGroup").style.display =
+          type === "url" ? "none" : "block";
+        document.getElementById("urlGroup").style.display =
+          type === "url" ? "block" : "none";
+        const fi = document.getElementById("pFile");
+        if (type === "image") fi.accept = "image/*";
+        else if (type === "video") fi.accept = "video/mp4,video/webm,video/*";
+        else if (type === "pdf") fi.accept = "application/pdf";
+      }
+      function onFileChange(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const MAX = 15 * 1024 * 1024;
+        if (file.size > MAX) {
+          notify("File too large — max 15MB. Use a URL for bigger videos.");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          currentFileB64 = ev.target.result;
+          document.getElementById("upzPrev").textContent =
+            `✓ ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // ════════════════════════════════════════════════════
+      //  TESTIMONIALS
+      // ════════════════════════════════════════════════════
+      function renderTestimonials() {
+        const data = getMeta();
+        document.getElementById("testiGrid").innerHTML = data.testimonials
+          .map(
+            (t) => `
+    <div class="testi-card rev">
+      ${t.placeholder ? `<div class="testi-placeholder-note">Placeholder — replace with real review</div>` : ""}
+      <div class="testi-stars">${'<span class="star">★</span>'.repeat(t.rating)}</div>
+      <div class="testi-quote-mark">"</div>
+      <div class="testi-text">${t.text}</div>
+      <div class="testi-author">
+        <div class="testi-avatar">${t.name.charAt(0)}</div>
+        <div>
+          <div class="testi-name">${t.name}</div>
+          <div class="testi-meta">${t.meta}${t.source ? " · " + t.source : ""}</div>
+        </div>
+      </div>
+      ${document.body.classList.contains("edit") ? `<button class="eb-btn red" style="margin-top:14px;width:100%;font-size:.65rem" onclick="deleteTestimony('${t.id}')">Remove</button>` : ""}
+    </div>`,
+          )
+          .join("");
+        initReveal();
+      }
+      function openTestiModal() {
+        openModal("testiModal");
+      }
+      function saveTestimony() {
+        const text = document.getElementById("tText").value.trim();
+        const name = document.getElementById("tName").value.trim();
+        if (!text || !name) {
+          notify("Review text and name are required");
+          return;
+        }
+        const data = getMeta();
+        data.testimonials.push({
+          id: "t" + Date.now(),
+          text,
+          name,
+          meta: document.getElementById("tMeta").value.trim(),
+          rating: parseInt(document.getElementById("tRating").value) || 5,
+          source: document.getElementById("tSource").value.trim(),
+          placeholder: false,
+        });
+        setMeta(data);
+        closeModal("testiModal");
+        renderTestimonials();
+        notify("Review added ✓");
+      }
+      function deleteTestimony(id) {
+        if (!confirm("Remove this review?")) return;
+        const data = getMeta();
+        data.testimonials = data.testimonials.filter((t) => t.id !== id);
+        setMeta(data);
+        renderTestimonials();
+        notify("Removed");
+      }
+
+      // ════════════════════════════════════════════════════
+      //  LIGHTBOX
+      // ════════════════════════════════════════════════════
+      function openLightbox(id, encodedSrc, type, e) {
+        if (e) {
+          e.stopPropagation();
+        }
+        const src = decodeURIComponent(encodedSrc);
+        const el = document.getElementById("lboxContent");
+        if (type === "video")
+          el.innerHTML = `<video class="lbox-img" src="${src}" controls autoplay></video>`;
+        else if (type === "pdf")
+          el.innerHTML = `<iframe class="lbox-iframe" src="${src}"></iframe>`;
+        else
+          el.innerHTML = `<img class="lbox-img" src="${src}" alt="Portfolio item"/>`;
+        document.getElementById("lightbox").classList.add("open");
+      }
+      function closeLightbox() {
+        document.getElementById("lightbox").classList.remove("open");
+        document.getElementById("lboxContent").innerHTML = "";
+      }
+
+      // ════════════════════════════════════════════════════
+      //  EDIT MODE
+      // ════════════════════════════════════════════════════
+      document
+        .getElementById("editToggle")
+        .addEventListener("click", function () {
+          const isOn = document.body.classList.toggle("edit");
+          this.classList.toggle("on", isOn);
+          this.textContent = isOn ? "Exit Edit" : "Edit Site";
+          document
+            .querySelectorAll("[data-ed]")
+            .forEach((el) => (el.contentEditable = isOn ? "true" : "false"));
+          if (!isOn) saveAll();
+          renderTestimonials();
+        });
+      function saveAll() {
+        const data = getMeta();
+        document.querySelectorAll("[data-ed]").forEach((el) => {
+          data.text[el.dataset.k] = el.innerHTML;
+        });
+        setMeta(data);
+        notify("All changes saved ✓");
+      }
+      function initText() {
+        const data = getMeta();
+        document.querySelectorAll("[data-ed]").forEach((el) => {
+          if (data.text && data.text[el.dataset.k])
+            el.innerHTML = data.text[el.dataset.k];
+        });
+      }
+
+      // ════════════════════════════════════════════════════
+      //  EXPORT / IMPORT
+      // ════════════════════════════════════════════════════
+      function exportData() {
+        const raw = localStorage.getItem(LS_KEY) || "{}";
+        const blob = new Blob([raw], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "samuel-portfolio-backup.json";
+        a.click();
+        notify("Backup exported ✓");
+      }
+      function triggerImport() {
+        document.getElementById("importFile").click();
+      }
+      function importData(e) {
+        const fr = new FileReader();
+        fr.onload = (ev) => {
+          try {
+            JSON.parse(ev.target.result);
+            localStorage.setItem(LS_KEY, ev.target.result);
+            location.reload();
+          } catch {
+            notify("Invalid backup file");
+          }
+        };
+        fr.readAsText(e.target.files[0]);
+      }
+      // Ctrl+Shift+E / I shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === "E") {
+          exportData();
+        }
+        if (e.ctrlKey && e.shiftKey && e.key === "I") {
+          triggerImport();
+        }
+      });
+
+      // ════════════════════════════════════════════════════
+      //  MODAL HELPERS
+      // ════════════════════════════════════════════════════
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+      document.querySelectorAll(".modal-bg").forEach((bg) => {
+        bg.addEventListener("click", (e) => {
+          if (e.target === bg) bg.classList.remove("open");
+        });
+      });
+
+      // ════════════════════════════════════════════════════
+      //  NOTIFICATION
+      // ════════════════════════════════════════════════════
+      let nTimer;
+      function notify(msg) {
+        document.getElementById("notifTxt").textContent = msg;
+        const n = document.getElementById("notif");
+        n.classList.add("show");
+        clearTimeout(nTimer);
+        nTimer = setTimeout(() => n.classList.remove("show"), 3200);
+      }
+
+      // ════════════════════════════════════════════════════
+      //  REVEAL ON SCROLL
+      // ════════════════════════════════════════════════════
+      function initReveal() {
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("in");
+                obs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.08 },
+        );
+        document.querySelectorAll(".rev,.rev2,.rev3").forEach((el) => {
+          if (!el.classList.contains("in")) obs.observe(el);
+        });
+      }
+
+      // ════════════════════════════════════════════════════
+      //  NAV SCROLL
+      // ════════════════════════════════════════════════════
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("nav")
+          .classList.toggle("stuck", window.scrollY > 80);
+      });
+
+      // ════════════════════════════════════════════════════
+      //  BOOT
+      // ════════════════════════════════════════════════════
+      (async () => {
+        await openDB();
+        initText();
+        buildTicker();
+        renderSoftware();
+        renderTimeline();
+        renderServices();
+        await renderPortfolio();
+        renderTestimonials();
+        initReveal();
+      })();
+    </script>
+  </body>
+</html>
