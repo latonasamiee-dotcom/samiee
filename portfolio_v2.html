@@ -179,13 +179,6 @@
         border-color: var(--gold);
       }
 
-      .rev,
-      .rev2,
-      .rev3 {
-        opacity: 1;
-        transform: none;
-      }
-
       /* ═══════════════════════════════════════════════════════════
    NAV
 ══════════════════════════════════════════════════════════ */
@@ -3306,9 +3299,9 @@
       // ════════════════════════════════════════════════════
       //  EDIT MODE
       // ════════════════════════════════════════════════════
-      const editToggleBtn = document.getElementById("editToggle");
-      if (editToggleBtn) {
-        editToggleBtn.addEventListener("click", function () {
+      document
+        .getElementById("editToggle")
+        .addEventListener("click", function () {
           const isOn = document.body.classList.toggle("edit");
           this.classList.toggle("on", isOn);
           this.textContent = isOn ? "Exit Edit" : "Edit Site";
@@ -3318,7 +3311,6 @@
           if (!isOn) saveAll();
           renderTestimonials();
         });
-      }
       function saveAll() {
         const data = getMeta();
         document.querySelectorAll("[data-ed]").forEach((el) => {
@@ -3413,7 +3405,7 @@
               }
             });
           },
-          { threshold: 0, rootMargin: "0px 0px -50px 0px" },
+          { threshold: 0.08 },
         );
         document.querySelectorAll(".rev,.rev2,.rev3").forEach((el) => {
           if (!el.classList.contains("in")) obs.observe(el);
